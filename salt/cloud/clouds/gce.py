@@ -1529,11 +1529,11 @@ def delete_disk(kwargs=None, call=None):
 
 
 def create_disk(kwargs=None, call=None):
-
     '''
-    Create a new persistent disk. Must specify `disk_name` and `location`.
-    Can also specify an `image` or `snapshot` but if neither of those are
-    specified, a `size` (in GB) is required.
+    Create a new persistent disk. Must specify `disk_name` and `location`,
+    and optionally can specify 'disk_type' as pd-standard or pd-ssd, which
+    defaults to pd-standard. Can also specify an `image` or `snapshot` but
+    if neither of those are specified, a `size` (in GB) is required.
 
     CLI Example:
 
@@ -1554,6 +1554,7 @@ def create_disk(kwargs=None, call=None):
     location = kwargs.get('location', None)
     size = kwargs.get('size', None)
     snapshot = kwargs.get('snapshot', None)
+    disk_type = kwargs.get('type', 'pd-standard')
 
     if location is None:
         log.error(
@@ -1592,7 +1593,7 @@ def create_disk(kwargs=None, call=None):
     )
 
     disk = conn.create_volume(
-        size, name, location, snapshot, image, use_existing
+        size, name, location, snapshot, image, use_existing, disk_type
     )
 
     __utils__['cloud.fire_event'](
